@@ -1,8 +1,17 @@
-let step=1;
-function next(){document.getElementById('step1').classList.add('hide');document.getElementById('step2').classList.remove('hide');bar.style.width='66%';}
+let food=5,service=5;
+function build(id,valSetter){
+const el=document.getElementById(id);
+for(let i=1;i<=5;i++){
+ let s=document.createElement('span');s.innerHTML='★';
+ if(i<=5)s.classList.add('on');
+ s.onclick=()=>{[...el.children].forEach((c,idx)=>c.classList.toggle('on',idx<i));valSetter(i);}
+ el.appendChild(s);
+}}
+build('foodStars',v=>food=v);build('serviceStars',v=>service=v);
 function generate(){
-const e=event.value,f=food.value,s=service.value,c=comments.value.trim();
-review.value=`We recently hired Shreevallabh Caterers for our ${e}. The food was excellent (${f}/5), the service was outstanding (${s}/5), and the entire experience was smooth and professionally managed. ${c?c+' ':''}We highly recommend Shreevallabh Caterers for any special occasion.`;
-step2.classList.add('hide');step3.classList.remove('hide');bar.style.width='100%';
+const e=event.value,c=comments.value.trim();
+review.value=`We recently chose Shreevallabh Caterers for our ${e}. The food was delicious (${food}/5) and the service was exceptional (${service}/5). ${c?c+' ':''}The entire team was professional, punctual, and made our celebration memorable. We highly recommend Shreevallabh Caterers for any special occasion.`;
+screen1.style.display='none';screen2.style.display='block';
 }
-function copyReview(){navigator.clipboard.writeText(review.value);alert('Review copied!');}
+function copyReview(){navigator.clipboard.writeText(review.value);alert('Copied to clipboard');}
+function back(){screen2.style.display='none';screen1.style.display='block';}

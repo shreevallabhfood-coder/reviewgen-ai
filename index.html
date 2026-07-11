@@ -1,36 +1,59 @@
-<!DOCTYPE html><html><head><meta charset="utf-8">
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ReviewGen AI</title>
+<title>ReviewGen AI V4</title>
 <link rel="stylesheet" href="css/style.css">
-</head><body>
-<div class="container">
+</head>
+<body>
+<div class="bg"></div>
 <div class="card">
-<img class="logo" src="assets/logo.png">
-<h1>Shreevallabh</h1>
-<p>Caterers • Kitchens • Hospitality LLP</p>
-<div class="progress"><div id="bar"></div></div>
+<img src="assets/logo.png" class="logo">
+<h1>Thank you for choosing Shreevallabh</h1>
+<p>Your feedback helps us serve you better.</p>
 
-<div id="step1" class="step">
-<h2>What was your event?</h2>
+<div class="lang">
+<button>EN</button><button>हिं</button><button>ગુ</button>
+</div>
+
+<div id="wizard">
+<div class="step">
+<h2>1. Select Event</h2>
 <select id="event">
-<option>Wedding</option><option>Birthday</option><option>Corporate</option><option>Housewarming</option><option>Festival</option>
+<option>Wedding</option>
+<option>Birthday</option>
+<option>Corporate</option>
+<option>Housewarming</option>
+<option>Festival</option>
+<option>Other</option>
 </select>
-<button onclick="next()">Continue →</button>
 </div>
 
-<div id="step2" class="step hide">
-<h2>Rate your experience</h2>
-<label>Food</label><input id="food" type="range" min="1" max="5" value="5">
-<label>Service</label><input id="service" type="range" min="1" max="5" value="5">
-<textarea id="comments" placeholder="Anything special?"></textarea>
-<button onclick="generate()">✨ Generate Review</button>
+<div class="step">
+<h2>2. Rate Us</h2>
+<div class="stars" id="food"></div>
+<div class="caption">Food</div>
+<div class="stars" id="service"></div>
+<div class="caption">Service</div>
 </div>
 
-<div id="step3" class="step hide">
-<h2>Your AI Review</h2>
+<div class="step">
+<h2>3. Tell us more</h2>
+<textarea id="comments" placeholder="Share your experience..."></textarea>
+<button onclick="generate()">✨ Generate AI Review</button>
+</div>
+</div>
+
+<div id="result" class="hidden">
+<h2>Your Review</h2>
 <textarea id="review"></textarea>
-<button onclick="copyReview()">📋 Copy Review</button>
-<button onclick="window.open('https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho','_blank')">⭐ Post on Google</button>
+<div class="actions">
+<button onclick="copyReview()">📋 Copy</button>
+<button onclick="window.open('https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho','_blank')">⭐ Google</button>
 </div>
-</div></div>
-<script src="js/app.js"></script></body></html>
+<button class="back" onclick="location.reload()">↺ Start Again</button>
+</div>
+
+</div>
+<script src="js/app.js"></script>
+</body></html>
