@@ -1,15 +1,13 @@
-# ReviewGen AI V6.2
+# ReviewGen AI V6.3
 
-Fresh AI-style review generator for Shreevallabh Caterers, Kitchens & Hospitality LLP.
+Fixed customer-aware review generation.
 
-## Important Fix
-V6.2 fixes repeated same review issue using randomized review structures and cache-busting query strings.
+## Changes
+- Reads customer-entered text.
+- Reads food and service star ratings.
+- Review changes according to rating score.
+- Removed example name from name field.
+- Does not invent Amit/Jogawade Family when name is blank.
+- Uses cache busting: app.js?v=6.3 and style.css?v=6.3.
 
-Upload these files to the GitHub repository root:
-- index.html
-- style.css
-- app.js
-- logo.png
-- README.md
-
-After upload, hard refresh the website using Ctrl+F5.
+Upload all files to GitHub root and hard refresh with Ctrl+F5.
