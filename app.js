@@ -1,142 +1,189 @@
+const GOOGLE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho";
+
 let foodRating = 5;
 let serviceRating = 5;
 
-const GOOGLE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho';
+const $ = (id) => document.getElementById(id);
 
-function buildStars(containerId, initialValue, onChange) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
+function buildStars(containerId, onChange) {
+  const container = $(containerId);
+  container.innerHTML = "";
 
   for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.className = 'star';
-    star.textContent = '★';
-    star.setAttribute('role', 'button');
-    star.setAttribute('tabindex', '0');
-    star.setAttribute('aria-label', `${i} star rating`);
+    const star = document.createElement("span");
+    star.textContent = "★";
+    star.className = "star on";
+    star.setAttribute("role", "button");
+    star.setAttribute("aria-label", `${i} star rating`);
 
-    const setValue = () => {
-      onChange(i);
+    star.addEventListener("click", () => {
       [...container.children].forEach((child, index) => {
-        child.classList.toggle('on', index < i);
+        child.classList.toggle("on", index < i);
       });
-    };
-
-    star.addEventListener('click', setValue);
-    star.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') setValue();
+      onChange(i);
     });
 
     container.appendChild(star);
   }
-
-  [...container.children].forEach((child, index) => child.classList.toggle('on', index < initialValue));
 }
 
-buildStars('foodStars', foodRating, value => foodRating = value);
-buildStars('serviceStars', serviceRating, value => serviceRating = value);
+buildStars("foodStars", (value) => foodRating = value);
+buildStars("serviceStars", (value) => serviceRating = value);
 
-function choice(items) {
-  return items[Math.floor(Math.random() * items.length)];
+function getSettings() {
+  return {
+    endpoint: localStorage.getItem("reviewgen_api_endpoint") || "",
+    model: localStorage.getItem("reviewgen_api_model") || "gpt-4o-mini",
+    key: localStorage.getItem("reviewgen_api_key") || ""
+  };
 }
 
-function cleanText(value) {
-  return value.trim().replace(/\s+/g, ' ');
+function updateAIStatus() {
+  const { endpoint, key } = getSettings();
+  $("aiStatus").textContent = endpoint && key
+    ? "AI Mode: Real AI API enabled"
+    : "AI Mode: Smart local generator";
 }
 
-function generateEnglish(data) {
-  const intro = {
-    warm: [`We had a wonderful experience with Shreevallabh Caterers for our ${data.event}.`, `Shreevallabh Caterers made our ${data.event} truly special.`],
-    premium: [`Shreevallabh Caterers delivered a highly professional catering experience for our ${data.event}.`, `For our ${data.event}, Shreevallabh Caterers provided excellent food quality and dependable hospitality.`],
-    simple: [`We chose Shreevallabh Caterers for our ${data.event} and had a very good experience.`, `Our ${data.event} catering by Shreevallabh Caterers was very nice.`],
-    emotional: [`Our ${data.event} became even more memorable because of Shreevallabh Caterers.`, `Shreevallabh Caterers added a beautiful touch to our ${data.event}.`]
+function collectInputs() {
+  return {
+    language: $("language").value,
+    eventType: $("eventType").value,
+    tone: $("tone").value,
+    length: $("length").value,
+    customerName: $("customerName").value.trim(),
+    likedMost: $("likedMost").value.trim(),
+    specialMention: $("specialMention").value.trim(),
+    foodRating,
+    serviceRating
+  };
+}
+
+function localReview(data) {
+  const customer = data.customerName ? `${data.customerName}` : "our family";
+  const highlight = data.likedMost || "the delicious food, smooth coordination and professional service";
+  const special = data.specialMention ? ` A special mention for ${data.specialMention}, which everyone appreciated.` : "";
+
+  const english = {
+    Short: `We chose Shreevallabh Caterers, Kitchens & Hospitality LLP for our ${data.eventType}. The food quality was excellent (${data.foodRating}/5) and the service was outstanding (${data.serviceRating}/5). We especially liked ${highlight}.${special} Thank you for making ${customer}'s event memorable. Highly recommended!`,
+    Medium: `Shreevallabh Caterers, Kitchens & Hospitality LLP did a wonderful job for our ${data.eventType}. The food was tasty, fresh and beautifully served, and the service team handled everything with great care. Food quality: ${data.foodRating}/5. Service quality: ${data.serviceRating}/5. We especially liked ${highlight}.${special} The team was punctual, polite and well organized. We would happily recommend them for family functions, weddings and special occasions.`,
+    Detailed: `Our experience with Shreevallabh Caterers, Kitchens & Hospitality LLP for our ${data.eventType} was excellent from start to finish. The food quality was impressive (${data.foodRating}/5), the presentation was neat, and the taste was appreciated by our guests. The service quality was also excellent (${data.serviceRating}/5), with the team managing the event professionally and on time. We especially liked ${highlight}.${special} Thank you for making ${customer}'s celebration smooth, special and memorable. We strongly recommend Shreevallabh Caterers for any important occasion.`
   };
 
-  const foodLine = data.food >= 5 ? 'The food was delicious, fresh, and appreciated by our guests.' : `The food was very good and deserves ${data.food}/5 from us.`;
-  const serviceLine = data.service >= 5 ? 'The service team was polite, punctual, and well coordinated.' : `The service was good and we would rate it ${data.service}/5.`;
-  const highlightLine = data.highlights ? `We especially liked ${data.highlights}.` : 'Everything was handled with care and attention.';
-  const closing = choice([
-    'We happily recommend Shreevallabh Caterers for weddings, family functions, and special occasions.',
-    'Thank you to the entire team for making the event smooth and memorable.',
-    'Highly recommended for anyone looking for tasty food and reliable service.'
-  ]);
-  const name = data.name ? ` - ${data.name}` : '';
+  let review = english[data.length] || english.Short;
 
-  if (data.length === 'short') return `${choice(intro[data.tone])} ${foodLine} ${serviceLine} ${closing}${name}`;
-  if (data.length === 'long') return `${choice(intro[data.tone])} ${foodLine} ${serviceLine} ${highlightLine} From planning to serving, the team maintained a professional approach and helped us host the event smoothly. ${closing}${name}`;
-  return `${choice(intro[data.tone])} ${foodLine} ${serviceLine} ${highlightLine} ${closing}${name}`;
-}
-
-function generateIndic(data, language) {
-  const translations = {
-    hindi: {
-      intro: `हमने अपने ${data.event} के लिए Shreevallabh Caterers को चुना और हमारा अनुभव बहुत अच्छा रहा।`,
-      food: `खाना स्वादिष्ट, ताज़ा और सभी मेहमानों को पसंद आया।`,
-      service: `सेवा समय पर, विनम्र और अच्छी तरह व्यवस्थित थी।`,
-      highlight: data.highlights ? `हमें खास तौर पर ${data.highlights} बहुत पसंद आया।` : `पूरी व्यवस्था बहुत अच्छी रही।`,
-      close: `हम Shreevallabh Caterers को विशेष अवसरों के लिए ज़रूर recommend करते हैं।`
-    },
-    gujarati: {
-      intro: `અમારા ${data.event} માટે અમે Shreevallabh Caterers પસંદ કર્યા અને અનુભવ ખૂબ સારો રહ્યો.`,
-      food: `ભોજન સ્વાદિષ્ટ, તાજું અને મહેમાનોને ખૂબ ગમ્યું.`,
-      service: `સેવા સમયસર, વિનમ્ર અને સારી રીતે સંચાલિત હતી.`,
-      highlight: data.highlights ? `અમને ખાસ કરીને ${data.highlights} ખૂબ ગમ્યું.` : `સંપૂર્ણ વ્યવસ્થા ખૂબ સારી રહી.`,
-      close: `વિશેષ પ્રસંગો માટે અમે Shreevallabh Caterers ને જરૂરથી recommend કરીએ છીએ.`
-    },
-    marathi: {
-      intro: `आमच्या ${data.event} साठी आम्ही Shreevallabh Caterers निवडले आणि अनुभव खूप छान होता.`,
-      food: `जेवण चविष्ट, ताजे आणि पाहुण्यांना खूप आवडले.`,
-      service: `सेवा वेळेवर, नम्र आणि व्यवस्थित होती.`,
-      highlight: data.highlights ? `आम्हाला विशेषतः ${data.highlights} खूप आवडले.` : `संपूर्ण व्यवस्था उत्तम होती.`,
-      close: `विशेष कार्यक्रमांसाठी आम्ही Shreevallabh Caterers नक्कीच recommend करू.`
-    }
-  };
-
-  const t = translations[language];
-  const name = data.name ? ` - ${data.name}` : '';
-  if (data.length === 'short') return `${t.intro} ${t.food} ${t.close}${name}`;
-  if (data.length === 'long') return `${t.intro} ${t.food} ${t.service} ${t.highlight} संपूर्ण टीमने कार्यक्रम सुंदर आणि लक्षात राहील असा केला. ${t.close}${name}`;
-  return `${t.intro} ${t.food} ${t.service} ${t.highlight} ${t.close}${name}`;
-}
-
-function generateReview() {
-  const data = {
-    language: document.getElementById('language').value,
-    event: document.getElementById('eventType').value,
-    tone: document.getElementById('tone').value,
-    length: document.getElementById('length').value,
-    food: foodRating,
-    service: serviceRating,
-    highlights: cleanText(document.getElementById('highlights').value),
-    name: cleanText(document.getElementById('customerName').value)
-  };
-
-  const review = data.language === 'english' ? generateEnglish(data) : generateIndic(data, data.language);
-  document.getElementById('reviewOutput').value = review;
-  document.getElementById('resultCard').classList.remove('hidden');
-  document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-async function copyReview() {
-  const review = document.getElementById('reviewOutput').value;
-  if (!review) return;
-  try {
-    await navigator.clipboard.writeText(review);
-    alert('Review copied successfully!');
-  } catch (error) {
-    document.getElementById('reviewOutput').select();
-    document.execCommand('copy');
-    alert('Review copied successfully!');
+  if (data.language === "Hindi") {
+    review = `हमने अपने ${data.eventType} कार्यक्रम के लिए Shreevallabh Caterers, Kitchens & Hospitality LLP को चुना। भोजन की गुणवत्ता बहुत अच्छी थी (${data.foodRating}/5) और सेवा भी शानदार थी (${data.serviceRating}/5)। हमें खास तौर पर ${highlight} बहुत पसंद आया।${special} पूरी टीम समय पर, विनम्र और प्रोफेशनल थी। हमारे कार्यक्रम को यादगार बनाने के लिए धन्यवाद। Highly recommended!`;
   }
+
+  if (data.language === "Gujarati") {
+    review = `અમારા ${data.eventType} પ્રસંગ માટે અમે Shreevallabh Caterers, Kitchens & Hospitality LLP પસંદ કર્યા. ભોજન ખૂબ સ્વાદિષ્ટ હતું (${data.foodRating}/5) અને સેવા પણ ઉત્તમ હતી (${data.serviceRating}/5). અમને ખાસ કરીને ${highlight} બહુ ગમ્યું.${special} આખી ટીમ સમયસર, સંસ્કારી અને પ્રોફેશનલ હતી. પ્રસંગ યાદગાર બનાવવા બદલ આભાર. Highly recommended!`;
+  }
+
+  if (data.language === "Marathi") {
+    review = `आमच्या ${data.eventType} कार्यक्रमासाठी आम्ही Shreevallabh Caterers, Kitchens & Hospitality LLP ची निवड केली. जेवणाची गुणवत्ता उत्कृष्ट होती (${data.foodRating}/5) आणि सेवा देखील खूप छान होती (${data.serviceRating}/5). आम्हाला विशेषतः ${highlight} खूप आवडले.${special} संपूर्ण टीम वेळेवर, विनम्र आणि प्रोफेशनल होती. आमचा कार्यक्रम संस्मरणीय केल्याबद्दल धन्यवाद. Highly recommended!`;
+  }
+
+  if (data.tone === "Royal Wedding Style") {
+    review = review.replace("excellent", "royal and excellent").replace("wonderful", "grand and wonderful");
+  }
+
+  if (data.tone === "Highly Emotional") {
+    review += " This experience will always remain close to our hearts.";
+  }
+
+  return review;
+}
+
+async function callRealAI(data, instruction = "") {
+  const { endpoint, model, key } = getSettings();
+  if (!endpoint || !key) return null;
+
+  const prompt = `Create a customer review for Shreevallabh Caterers, Kitchens & Hospitality LLP.\nLanguage: ${data.language}\nEvent: ${data.eventType}\nTone: ${data.tone}\nLength: ${data.length}\nFood rating: ${data.foodRating}/5\nService rating: ${data.serviceRating}/5\nCustomer/family name: ${data.customerName || "not provided"}\nLiked most: ${data.likedMost || "not provided"}\nSpecial mention: ${data.specialMention || "not provided"}\nExtra instruction: ${instruction || "none"}\nRules: write only the review text, make it natural, positive, ready to post on Google, no hashtags.`;
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${key}`
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: "You write authentic, warm, high-quality customer reviews for a catering and hospitality business." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.85
+    })
+  });
+
+  if (!response.ok) throw new Error(`AI API error: ${response.status}`);
+  const json = await response.json();
+  return json.choices?.[0]?.message?.content?.trim() || null;
+}
+
+async function generateReview(instruction = "") {
+  const button = instruction ? $("rewriteBtn") : $("generateBtn");
+  button.disabled = true;
+  button.textContent = "Generating...";
+
+  const data = collectInputs();
+  let review;
+
+  try {
+    review = await callRealAI(data, instruction);
+  } catch (error) {
+    console.warn(error);
+    review = null;
+    alert("Real AI API failed, so V6 used the smart local generator instead.");
+  }
+
+  if (!review) review = localReview(data);
+
+  $("reviewOutput").value = review;
+  $("formScreen").classList.add("hidden");
+  $("resultScreen").classList.remove("hidden");
+
+  button.disabled = false;
+  button.textContent = instruction ? "✨ Rewrite with AI" : "✨ Generate AI Review";
+}
+
+function copyReview() {
+  const output = $("reviewOutput");
+  output.select();
+  navigator.clipboard.writeText(output.value);
+  alert("Review copied successfully!");
 }
 
 function shareWhatsApp() {
-  const review = encodeURIComponent(document.getElementById('reviewOutput').value);
-  window.open(`https://wa.me/?text=${review}`, '_blank');
+  const text = encodeURIComponent($("reviewOutput").value);
+  window.open(`https://wa.me/?text=${text}`, "_blank");
 }
 
-document.getElementById('generateBtn').addEventListener('click', generateReview);
-document.getElementById('newReviewBtn').addEventListener('click', generateReview);
-document.getElementById('copyBtn').addEventListener('click', copyReview);
-document.getElementById('googleBtn').addEventListener('click', () => window.open(GOOGLE_REVIEW_URL, '_blank'));
-document.getElementById('whatsappBtn').addEventListener('click', shareWhatsApp);
+function openSettings() {
+  const settings = getSettings();
+  $("apiEndpoint").value = settings.endpoint;
+  $("apiModel").value = settings.model;
+  $("apiKey").value = settings.key;
+  $("settingsDialog").showModal();
+}
+
+function saveSettings(event) {
+  event.preventDefault();
+  localStorage.setItem("reviewgen_api_endpoint", $("apiEndpoint").value.trim());
+  localStorage.setItem("reviewgen_api_model", $("apiModel").value.trim() || "gpt-4o-mini");
+  localStorage.setItem("reviewgen_api_key", $("apiKey").value.trim());
+  $("settingsDialog").close();
+  updateAIStatus();
+}
+
+$("generateBtn").addEventListener("click", () => generateReview());
+$("rewriteBtn").addEventListener("click", () => generateReview($("customInstruction").value.trim()));
+$("copyBtn").addEventListener("click", copyReview);
+$("googleBtn").addEventListener("click", () => window.open(GOOGLE_REVIEW_URL, "_blank"));
+$("whatsappBtn").addEventListener("click", shareWhatsApp);
+$("generateAnotherBtn").addEventListener("click", () => location.reload());
+$("apiSettingsBtn").addEventListener("click", openSettings);
+$("saveSettingsBtn").addEventListener("click", saveSettings);
+
+updateAIStatus();

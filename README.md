@@ -1,24 +1,35 @@
-# ReviewGen AI V5
+# ReviewGen AI V6
 
-Static GitHub Pages review generator for Shreevallabh Caterers, Kitchens & Hospitality LLP.
+AI-powered review generator for Shreevallabh Caterers, Kitchens & Hospitality LLP.
 
 ## Files
 
-- `index.html`
-- `css/style.css`
-- `js/app.js`
-- `assets/logo.png`
+- `index.html` - Main website
+- `style.css` - Full responsive design
+- `app.js` - AI review logic, star ratings, copy, Google review, WhatsApp share
+- `logo.png` - Add your logo file in the same folder
 
-## Important logo setup
+## Real AI Setup
 
-Upload your logo image as:
+V6 supports real AI through any OpenAI-compatible chat completions API.
+
+Open the website, click **Real AI API Settings**, then add:
+
+- API endpoint, for example: `https://api.openai.com/v1/chat/completions`
+- Model, for example: `gpt-4o-mini`
+- API key
+
+If no API key is added, the app automatically uses the built-in smart local generator.
+
+## GitHub Pages structure
+
+Keep all files in the root folder:
 
 ```text
-assets/logo.png
+reviewgen-ai/
+├── index.html
+├── style.css
+├── app.js
+├── logo.png
+└── README.md
 ```
-
-GitHub Pages is case-sensitive, so `Logo.png` and `logo.png` are different files.
-
-## Deploy
-
-Upload these files to the root of your GitHub repository and enable GitHub Pages from the main branch.

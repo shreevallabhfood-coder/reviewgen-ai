@@ -1,114 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ReviewGen AI V5 | Shreevallabh</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReviewGen AI V6</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app-shell">
     <section class="hero-card">
-      <img src="./assets/logo.png" class="logo" alt="Shreevallabh Caterers Kitchens & Hospitality LLP Logo" onerror="this.style.display='none';document.querySelector('.logo-fallback').style.display='grid';" />
-      <div class="logo-fallback">श्रीवल्लभ</div>
-      <p class="eyebrow">ReviewGen AI V5</p>
-      <h1>Generate a beautiful customer review in seconds</h1>
-      <p class="subtitle">Personalized review suggestions for Shreevallabh Caterers, Kitchens & Hospitality LLP.</p>
-    </section>
+      <div class="brand-block">
+        <img src="logo.png" alt="Shreevallabh Caterers Kitchens and Hospitality LLP logo" class="logo" onerror="this.style.display='none';document.querySelector('.logo-fallback').style.display='block';" />
+        <div class="logo-fallback">श्रीवल्लभ</div>
+        <div>
+          <p class="eyebrow">ReviewGen AI V6</p>
+          <h1>Generate a beautiful customer review in seconds</h1>
+          <p class="subtext">Real AI-powered review suggestions for Shreevallabh Caterers, Kitchens & Hospitality LLP.</p>
+        </div>
+      </div>
 
-    <section class="card form-card" id="formCard">
-      <div class="grid two">
-        <label>
-          Language
+      <div class="ai-status" id="aiStatus">AI Mode: Smart local generator</div>
+
+      <section id="formScreen" class="grid-layout">
+        <div class="panel">
+          <h2>Customer Details</h2>
+
+          <label>Language</label>
           <select id="language">
-            <option value="english">English</option>
-            <option value="hindi">Hindi</option>
-            <option value="gujarati">Gujarati</option>
-            <option value="marathi">Marathi</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Gujarati">Gujarati</option>
+            <option value="Marathi">Marathi</option>
           </select>
-        </label>
 
-        <label>
-          Event Type
+          <label>Event Type</label>
           <select id="eventType">
             <option>Wedding</option>
             <option>Engagement</option>
             <option>Birthday</option>
             <option>Corporate Event</option>
+            <option>Reception</option>
             <option>Housewarming</option>
-            <option>Festival Function</option>
-            <option>Family Gathering</option>
-            <option>Other Celebration</option>
+            <option>Festival</option>
+            <option>Other</option>
           </select>
-        </label>
-      </div>
 
-      <div class="grid two">
-        <label>
-          Review Tone
+          <label>Review Tone</label>
           <select id="tone">
-            <option value="warm">Warm & Appreciative</option>
-            <option value="premium">Premium & Professional</option>
-            <option value="simple">Simple & Natural</option>
-            <option value="emotional">Emotional & Memorable</option>
+            <option>Premium & Professional</option>
+            <option>Warm & Family Friendly</option>
+            <option>Short & Simple</option>
+            <option>Royal Wedding Style</option>
+            <option>Highly Emotional</option>
           </select>
-        </label>
 
-        <label>
-          Review Length
+          <label>Review Length</label>
           <select id="length">
-            <option value="short">Short</option>
-            <option value="medium" selected>Medium</option>
-            <option value="long">Detailed</option>
+            <option>Short</option>
+            <option>Medium</option>
+            <option>Detailed</option>
           </select>
-        </label>
-      </div>
 
-      <div class="rating-box">
-        <div>
-          <h2>Food Quality</h2>
-          <div class="stars" id="foodStars" aria-label="Food rating"></div>
+          <label>Customer Name / Family Name <span>optional</span></label>
+          <input id="customerName" placeholder="Example: Amit / Jogawade Family" />
         </div>
-        <div>
-          <h2>Service Quality</h2>
-          <div class="stars" id="serviceStars" aria-label="Service rating"></div>
+
+        <div class="panel">
+          <h2>Ratings & Highlights</h2>
+
+          <div class="rating-row">
+            <span>Food Quality</span>
+            <div class="stars" id="foodStars"></div>
+          </div>
+
+          <div class="rating-row">
+            <span>Service Quality</span>
+            <div class="stars" id="serviceStars"></div>
+          </div>
+
+          <label>What did the customer like most?</label>
+          <textarea id="likedMost" placeholder="Example: tasty food, excellent service, professional staff, good presentation"></textarea>
+
+          <label>Any special dish or service?</label>
+          <input id="specialMention" placeholder="Example: Gujarati thali, live counter, sweets, punctual setup" />
+
+          <button class="primary" id="generateBtn">✨ Generate AI Review</button>
+          <button class="secondary" id="apiSettingsBtn">⚙️ Real AI API Settings</button>
+          <p class="hint">Tip: Without an API key, V6 still generates smart reviews locally. Add an OpenAI-compatible API key for real AI generation.</p>
         </div>
-      </div>
+      </section>
 
-      <label>
-        What did you like most?
-        <textarea id="highlights" placeholder="Example: tasty food, polite staff, timely service, beautiful presentation..."></textarea>
-      </label>
-
-      <label>
-        Customer Name / Family Name <span class="optional">optional</span>
-        <input id="customerName" type="text" placeholder="Example: Jogawade Family" />
-      </label>
-
-      <button class="primary" id="generateBtn" type="button">✨ Generate AI Review</button>
-    </section>
-
-    <section class="card result-card hidden" id="resultCard">
-      <div class="result-header">
-        <div>
-          <p class="eyebrow">Generated Review</p>
-          <h2>Your ready-to-post review</h2>
+      <section id="resultScreen" class="result hidden">
+        <div class="result-header">
+          <div>
+            <p class="eyebrow">Generated Review</p>
+            <h2>Your ready-to-post review</h2>
+          </div>
+          <button class="secondary small" id="generateAnotherBtn">↺ Generate Another</button>
         </div>
-        <button class="secondary" id="newReviewBtn" type="button">Generate Another</button>
-      </div>
 
-      <textarea id="reviewOutput" readonly></textarea>
+        <textarea id="reviewOutput"></textarea>
 
-      <div class="actions">
-        <button class="primary" id="copyBtn" type="button">📋 Copy Review</button>
-        <button class="google" id="googleBtn" type="button">⭐ Post on Google</button>
-        <button class="whatsapp" id="whatsappBtn" type="button">💬 Share on WhatsApp</button>
-      </div>
+        <div class="actions">
+          <button id="copyBtn">📋 Copy Review</button>
+          <button id="googleBtn">⭐ Post on Google</button>
+          <button id="whatsappBtn">💬 Share on WhatsApp</button>
+        </div>
 
-      <p class="tip">Tip: Customers can edit the review before posting if they want to make it more personal.</p>
+        <details class="advanced">
+          <summary>Improve this review with custom instruction</summary>
+          <input id="customInstruction" placeholder="Example: make it more emotional and mention wedding guests" />
+          <button class="secondary" id="rewriteBtn">✨ Rewrite with AI</button>
+        </details>
+      </section>
     </section>
   </main>
 
-  <script src="js/app.js"></script>
+  <dialog id="settingsDialog">
+    <form method="dialog" class="settings-box">
+      <h2>Real AI API Settings</h2>
+      <p class="hint">Use any OpenAI-compatible endpoint. Your key is stored only in this browser using localStorage.</p>
+
+      <label>API Endpoint</label>
+      <input id="apiEndpoint" placeholder="https://api.openai.com/v1/chat/completions" />
+
+      <label>Model</label>
+      <input id="apiModel" placeholder="gpt-4o-mini" />
+
+      <label>API Key</label>
+      <input id="apiKey" type="password" placeholder="Paste API key here" />
+
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary">Cancel</button>
+        <button id="saveSettingsBtn" value="default" class="primary">Save Settings</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
 </body>
 </html>
