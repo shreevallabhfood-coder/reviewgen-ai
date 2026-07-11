@@ -1,59 +1,114 @@
 <!DOCTYPE html>
-<html><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ReviewGen AI V4</title>
-<link rel="stylesheet" href="css/style.css">
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ReviewGen AI V5 | Shreevallabh</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<div class="bg"></div>
-<div class="card">
-<img src="assets/logo.png" class="logo">
-<h1>Thank you for choosing Shreevallabh</h1>
-<p>Your feedback helps us serve you better.</p>
+  <main class="app-shell">
+    <section class="hero-card">
+      <img src="./assets/logo.png" class="logo" alt="Shreevallabh Caterers Kitchens & Hospitality LLP Logo" onerror="this.style.display='none';document.querySelector('.logo-fallback').style.display='grid';" />
+      <div class="logo-fallback">श्रीवल्लभ</div>
+      <p class="eyebrow">ReviewGen AI V5</p>
+      <h1>Generate a beautiful customer review in seconds</h1>
+      <p class="subtitle">Personalized review suggestions for Shreevallabh Caterers, Kitchens & Hospitality LLP.</p>
+    </section>
 
-<div class="lang">
-<button>EN</button><button>हिं</button><button>ગુ</button>
-</div>
+    <section class="card form-card" id="formCard">
+      <div class="grid two">
+        <label>
+          Language
+          <select id="language">
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
+            <option value="gujarati">Gujarati</option>
+            <option value="marathi">Marathi</option>
+          </select>
+        </label>
 
-<div id="wizard">
-<div class="step">
-<h2>1. Select Event</h2>
-<select id="event">
-<option>Wedding</option>
-<option>Birthday</option>
-<option>Corporate</option>
-<option>Housewarming</option>
-<option>Festival</option>
-<option>Other</option>
-</select>
-</div>
+        <label>
+          Event Type
+          <select id="eventType">
+            <option>Wedding</option>
+            <option>Engagement</option>
+            <option>Birthday</option>
+            <option>Corporate Event</option>
+            <option>Housewarming</option>
+            <option>Festival Function</option>
+            <option>Family Gathering</option>
+            <option>Other Celebration</option>
+          </select>
+        </label>
+      </div>
 
-<div class="step">
-<h2>2. Rate Us</h2>
-<div class="stars" id="food"></div>
-<div class="caption">Food</div>
-<div class="stars" id="service"></div>
-<div class="caption">Service</div>
-</div>
+      <div class="grid two">
+        <label>
+          Review Tone
+          <select id="tone">
+            <option value="warm">Warm & Appreciative</option>
+            <option value="premium">Premium & Professional</option>
+            <option value="simple">Simple & Natural</option>
+            <option value="emotional">Emotional & Memorable</option>
+          </select>
+        </label>
 
-<div class="step">
-<h2>3. Tell us more</h2>
-<textarea id="comments" placeholder="Share your experience..."></textarea>
-<button onclick="generate()">✨ Generate AI Review</button>
-</div>
-</div>
+        <label>
+          Review Length
+          <select id="length">
+            <option value="short">Short</option>
+            <option value="medium" selected>Medium</option>
+            <option value="long">Detailed</option>
+          </select>
+        </label>
+      </div>
 
-<div id="result" class="hidden">
-<h2>Your Review</h2>
-<textarea id="review"></textarea>
-<div class="actions">
-<button onclick="copyReview()">📋 Copy</button>
-<button onclick="window.open('https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho','_blank')">⭐ Google</button>
-</div>
-<button class="back" onclick="location.reload()">↺ Start Again</button>
-</div>
+      <div class="rating-box">
+        <div>
+          <h2>Food Quality</h2>
+          <div class="stars" id="foodStars" aria-label="Food rating"></div>
+        </div>
+        <div>
+          <h2>Service Quality</h2>
+          <div class="stars" id="serviceStars" aria-label="Service rating"></div>
+        </div>
+      </div>
 
-</div>
-<script src="js/app.js"></script>
-</body></html>
+      <label>
+        What did you like most?
+        <textarea id="highlights" placeholder="Example: tasty food, polite staff, timely service, beautiful presentation..."></textarea>
+      </label>
+
+      <label>
+        Customer Name / Family Name <span class="optional">optional</span>
+        <input id="customerName" type="text" placeholder="Example: Jogawade Family" />
+      </label>
+
+      <button class="primary" id="generateBtn" type="button">✨ Generate AI Review</button>
+    </section>
+
+    <section class="card result-card hidden" id="resultCard">
+      <div class="result-header">
+        <div>
+          <p class="eyebrow">Generated Review</p>
+          <h2>Your ready-to-post review</h2>
+        </div>
+        <button class="secondary" id="newReviewBtn" type="button">Generate Another</button>
+      </div>
+
+      <textarea id="reviewOutput" readonly></textarea>
+
+      <div class="actions">
+        <button class="primary" id="copyBtn" type="button">📋 Copy Review</button>
+        <button class="google" id="googleBtn" type="button">⭐ Post on Google</button>
+        <button class="whatsapp" id="whatsappBtn" type="button">💬 Share on WhatsApp</button>
+      </div>
+
+      <p class="tip">Tip: Customers can edit the review before posting if they want to make it more personal.</p>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
