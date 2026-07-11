@@ -1,15 +1,15 @@
-# ReviewGen AI V6
+# ReviewGen AI V6.2
 
-AI-powered review generator for Shreevallabh Caterers, Kitchens & Hospitality LLP.
+Fresh AI-style review generator for Shreevallabh Caterers, Kitchens & Hospitality LLP.
 
-## Upload to GitHub
-Upload these files to the repository root:
+## Important Fix
+V6.2 fixes repeated same review issue using randomized review structures and cache-busting query strings.
 
+Upload these files to the GitHub repository root:
 - index.html
 - style.css
 - app.js
 - logo.png
 - README.md
 
-## Real AI
-Click Real AI API Settings in the app and enter an OpenAI-compatible endpoint, model, and API key.
+After upload, hard refresh the website using Ctrl+F5.
