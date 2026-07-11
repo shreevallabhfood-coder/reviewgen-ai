@@ -1,19 +1,20 @@
-# ReviewGen AI V6.4 - V6.3 UI Preserved
+# ReviewGen AI V6.5 - Human Reviews
 
-This package keeps the V6.3 visual design and applies the requested V6.4 updates.
+This package preserves the V6.3 UI and adds the V6.5 improvements requested.
 
-## Changes
+## V6.5 changes
 
-- Preserved V6.3 UI, layout, colors, cards, stars, and buttons.
-- Updated version labels to V6.4.
-- Customer Name / Family Name field is blank by default with no example placeholder.
-- Google Review button opens the updated Google review URL.
-- Smart customer-aware local review generator retained.
-- Optional OpenAI-compatible API settings retained.
+- WhatsApp button removed.
+- Customer Name / Family Name removed from the form.
+- Reviews now sound like a real customer wrote them in first person.
+- Removed robotic wording like customer feedback was / selected ratings.
+- Google Review button uses the updated Google review URL.
+- Copy Review and Post on Google buttons retained.
+- V6.3 visual design preserved.
 
 ## Upload to GitHub Pages
 
-Upload these files to the root of your repository:
+Upload these files directly to your repository root:
 
 ```text
 index.html
@@ -23,4 +24,4 @@ logo.png
 README.md
 ```
 
-Important: keep these files in the root folder, not inside another folder.
+Do not upload the parent folder itself. Upload the files inside it.
