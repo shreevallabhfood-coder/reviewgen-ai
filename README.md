@@ -1,19 +1,16 @@
-# ReviewGen AI V6.5 - Human Reviews
+# Rajshree Foods ReviewGen AI V1
 
-This package preserves the V6.3 UI and adds the V6.5 improvements requested.
+AI-style static review generator for Rajshree Foods.
 
-## V6.5 changes
-
-- WhatsApp button removed.
-- Customer Name / Family Name removed from the form.
-- Reviews now sound like a real customer wrote them in first person.
-- Removed robotic wording like customer feedback was / selected ratings.
-- Google Review button uses the updated Google review URL.
-- Copy Review and Post on Google buttons retained.
-- V6.3 visual design preserved.
+## Features
+- Human-style Google review drafts
+- English, Hindi, Marathi, Gujarati
+- Product-specific review generation
+- Taste and freshness/quality ratings
+- Copy Review and Post on Google buttons
+- Optional OpenAI-compatible API settings
 
 ## Upload to GitHub Pages
-
 Upload these files directly to your repository root:
 
 ```text
@@ -24,4 +21,4 @@ logo.png
 README.md
 ```
 
-Do not upload the parent folder itself. Upload the files inside it.
+The Google button opens the Rajshree Foods Google Maps review page.
