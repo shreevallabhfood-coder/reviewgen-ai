@@ -1,127 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ReviewGen AI V6.4</title>
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReviewGen AI V6.4</title>
+<link rel="stylesheet" href="style.css?v=6.4">
 </head>
 <body>
-  <main class="page">
-    <section class="app-card">
-      <header class="hero">
-        <div class="brand-logo-wrap">
-          <img src="assets/logo.png" class="brand-logo" alt="Shreevallabh Caterers Kitchens & Hospitality LLP Logo" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='grid';" />
-          <div id="logoFallback" class="logo-fallback">श्रीवल्लभ</div>
-        </div>
-        <div class="hero-text">
-          <div class="version">REVIEWGEN AI V6.4</div>
-          <h1>Generate a beautiful customer review in seconds</h1>
-          <p>Real AI-powered review suggestions for Shreevallabh Caterers, Kitchens & Hospitality LLP.</p>
-        </div>
-      </header>
-
-      <div class="mode-pill">AI Mode: Smart local generator</div>
-
-      <section class="content-grid">
-        <div class="panel">
-          <h2>Customer Details</h2>
-
-          <label for="language">Language</label>
-          <select id="language">
-            <option value="english">English</option>
-            <option value="hindi">Hindi</option>
-            <option value="marathi">Marathi</option>
-            <option value="gujarati">Gujarati</option>
-          </select>
-
-          <label for="eventType">Event Type</label>
-          <select id="eventType">
-            <option value="Wedding">Wedding</option>
-            <option value="Engagement">Engagement</option>
-            <option value="Birthday">Birthday</option>
-            <option value="Corporate Event">Corporate Event</option>
-            <option value="Housewarming">Housewarming</option>
-            <option value="Festival Function">Festival Function</option>
-            <option value="Family Function">Family Function</option>
-            <option value="Other Celebration">Other Celebration</option>
-          </select>
-
-          <label for="tone">Review Tone</label>
-          <select id="tone">
-            <option value="premium">Premium & Professional</option>
-            <option value="warm">Warm & Appreciative</option>
-            <option value="simple">Simple & Natural</option>
-            <option value="emotional">Emotional & Memorable</option>
-          </select>
-
-          <label for="length">Review Length</label>
-          <select id="length">
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="long">Detailed</option>
-          </select>
-
-          <label for="customerName">Customer Name / Family Name <span>optional</span></label>
-          <input id="customerName" type="text" autocomplete="name" />
-        </div>
-
-        <div class="panel">
-          <h2>Ratings & Highlights</h2>
-
-          <div class="rating-row">
-            <strong>Food Quality</strong>
-            <div class="stars" id="foodStars" aria-label="Food quality rating"></div>
-          </div>
-
-          <div class="rating-row">
-            <strong>Service Quality</strong>
-            <div class="stars" id="serviceStars" aria-label="Service quality rating"></div>
-          </div>
-
-          <label for="likedMost">What did the customer like most?</label>
-          <textarea id="likedMost" placeholder="Example: tasty food, excellent service, professional staff, good presentation"></textarea>
-
-          <label for="specialItem">Any special dish or service?</label>
-          <input id="specialItem" type="text" placeholder="Example: Gujarati thali, live counter, sweets, punctual setup" />
-
-          <button class="primary-btn" id="generateBtn" type="button">✨ Generate AI Review</button>
-          <button class="settings-btn" id="settingsBtn" type="button">⚙️ Real AI API Settings</button>
-
-          <p class="small-tip">Tip: Without an API key, V6.4 still generates smart reviews locally. Add an OpenAI-compatible API key for real AI generation.</p>
-        </div>
-      </section>
-
-      <section class="result-panel hidden" id="resultPanel">
-        <div class="result-header">
-          <div>
-            <div class="version">GENERATED REVIEW</div>
-            <h2>Your ready-to-post review</h2>
-          </div>
-          <button class="ghost-btn" id="regenerateBtn" type="button">Generate Again</button>
-        </div>
-        <textarea id="reviewOutput" readonly></textarea>
-        <div class="action-row">
-          <button class="copy-btn" id="copyBtn" type="button">📋 Copy Review</button>
-          <button class="google-btn" id="googleBtn" type="button">⭐ Post on Google</button>
-          <button class="whatsapp-btn" id="whatsappBtn" type="button">💬 Share on WhatsApp</button>
-        </div>
-      </section>
-
-      <section class="settings-panel hidden" id="settingsPanel">
-        <h2>Real AI API Settings</h2>
-        <p>Optional: Add an OpenAI-compatible API endpoint and key. If left blank, the app uses the smart local generator.</p>
-        <label for="apiEndpoint">API Endpoint</label>
-        <input id="apiEndpoint" type="text" placeholder="Example: https://api.openai.com/v1/chat/completions" />
-        <label for="apiKey">API Key</label>
-        <input id="apiKey" type="password" placeholder="Paste API key here" />
-        <label for="apiModel">Model</label>
-        <input id="apiModel" type="text" placeholder="Example: gpt-4o-mini" />
-        <button class="primary-btn" id="saveSettingsBtn" type="button">Save Settings</button>
-      </section>
-    </section>
-  </main>
-
-  <script src="js/app.js"></script>
+<main class="wrap">
+<section class="card">
+<header class="brand">
+<img src="logo.png" class="logo" alt="Shreevallabh Caterers logo" onerror="this.style.display='none';document.querySelector('.fallback').style.display='block'">
+<div class="fallback">श्रीवल्लभ</div>
+<div>
+<p class="tag">ReviewGen AI V6.4</p>
+<h1>Generate customer-specific reviews</h1>
+<p class="desc">Reads customer comments, selected event, rating stars, dish/service mention and optional name to create the review accordingly.</p>
+</div>
+</header>
+<div id="aiStatus" class="status">AI Mode: Customer-aware smart generator</div>
+<section id="formScreen" class="grid">
+<div class="panel">
+<h2>Customer Details</h2>
+<label>Language</label><select id="language"><option>English</option><option>Hindi</option><option>Gujarati</option><option>Marathi</option></select>
+<label>Event Type</label><select id="eventType"><option>Wedding</option><option>Engagement</option><option>Birthday</option><option>Corporate Event</option><option>Reception</option><option>Housewarming</option><option>Festival</option><option>Other</option></select>
+<label>Review Tone</label><select id="tone"><option>Premium & Professional</option><option>Warm & Family Friendly</option><option>Short & Simple</option><option>Royal Wedding Style</option><option>Highly Emotional</option></select>
+<label>Review Length</label><select id="length"><option>Short</option><option>Medium</option><option>Detailed</option></select>
+<label>Customer Name / Family Name <span>optional</span></label><input id="customerName">
+</div>
+<div class="panel">
+<h2>Ratings & Customer Words</h2>
+<div class="rating"><b>Food Quality</b><div id="foodStars" class="stars"></div></div>
+<div class="rating"><b>Service Quality</b><div id="serviceStars" class="stars"></div></div>
+<label>What did the customer say or like most?</label><textarea id="likedMost" placeholder="Example: food was tasty, service was fast, staff was polite, guests liked sweets"></textarea>
+<label>Specific dish / service / staff mention <span>optional</span></label><input id="specialMention" placeholder="Example: live counter, Gujarati thali, sweets, punctual setup">
+<button id="generateBtn" class="primary">✨ Generate Review From Customer Input</button>
+<button id="apiSettingsBtn" class="secondary">⚙️ Real AI API Settings</button>
+<p class="hint">V6.4 uses customer-entered words and star ratings. Lower ratings create a balanced review instead of fake 5-star language.</p>
+</div>
+</section>
+<section id="resultScreen" class="result hidden">
+<div class="top"><div><p class="tag">Generated Review</p><h2>Your ready-to-post review</h2></div><button id="againBtn" class="secondary small">↺ Edit Details</button></div>
+<textarea id="reviewOutput"></textarea>
+<div class="actions"><button id="freshBtn">✨ New Version</button><button id="copyBtn">📋 Copy</button><button id="googleBtn">⭐ Google</button><button id="whatsappBtn">💬 WhatsApp</button></div>
+<details><summary>Improve this review with custom instruction</summary><input id="customInstruction" placeholder="Example: make it shorter, mention guests, make more emotional"><button id="rewriteBtn" class="secondary">✨ Rewrite Review</button></details>
+</section>
+</section>
+</main>
+<dialog id="settingsDialog"><form class="settings"><h2>Real AI API Settings</h2><p class="hint">Optional. Your key is saved only in this browser using localStorage. If API fails, V6.4 uses customer-aware smart generator.</p><label>API Endpoint</label><input id="apiEndpoint" placeholder="https://api.openai.com/v1/chat/completions"><label>Model</label><input id="apiModel" placeholder="gpt-4o-mini"><label>API Key</label><input id="apiKey" type="password" placeholder="Paste API key here"><div class="dialogBtns"><button value="cancel" class="secondary">Cancel</button><button id="saveSettingsBtn" class="primary">Save Settings</button></div></form></dialog>
+<script src="app.js?v=6.4"></script>
 </body>
 </html>

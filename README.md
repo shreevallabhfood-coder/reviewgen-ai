@@ -1,31 +1,26 @@
-# ReviewGen AI V6.4
+# ReviewGen AI V6.4 - V6.3 UI Preserved
 
-Static GitHub Pages review generator for Shreevallabh Caterers, Kitchens & Hospitality LLP.
+This package keeps the V6.3 visual design and applies the requested V6.4 updates.
 
-## V6.4 changes
+## Changes
 
-- Google Review button opens the updated review URL:
-  https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho&source=g.page.m.ia._&utm_source=gbp&laa=nmx-review-solicitation-ia2
-- Customer Name / Family Name field is kept blank by default with no example placeholder.
-- Smart local multilingual review generator included.
-- Optional OpenAI-compatible API settings included.
+- Preserved V6.3 UI, layout, colors, cards, stars, and buttons.
+- Updated version labels to V6.4.
+- Customer Name / Family Name field is blank by default with no example placeholder.
+- Google Review button opens the updated Google review URL.
+- Smart customer-aware local review generator retained.
+- Optional OpenAI-compatible API settings retained.
 
-## Logo setup
+## Upload to GitHub Pages
 
-Add your logo image here:
-
-```text
-assets/logo.png
-```
-
-GitHub Pages is case-sensitive, so the file name must be exactly `logo.png`.
-
-## Upload structure
+Upload these files to the root of your repository:
 
 ```text
 index.html
-css/style.css
-js/app.js
-assets/logo.png
+style.css
+app.js
+logo.png
 README.md
 ```
+
+Important: keep these files in the root folder, not inside another folder.
