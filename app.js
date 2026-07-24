@@ -1,11 +1,58 @@
 const GOOGLE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=ChIJQ0w0F7K5wjsRzAlDupaKUho&source=g.page.m.ia._&utm_source=gbp&laa=nmx-review-solicitation-ia2";
-
 let foodRating = 5;
 let serviceRating = 5;
 let lastData = null;
 
 const $ = id => document.getElementById(id);
 const pick = a => a[Math.floor(Math.random() * a.length)];
+
+function clean(v) {
+  return (v || "").trim().replace(/\s+/g, " ");
+}
+
+function ensureCustomEventInput() {
+  let customBox = $("customEventType");
+
+  if (!customBox) {
+    customBox = document.createElement("input");
+    customBox.type = "text";
+    customBox.id = "customEventType";
+    customBox.name = "customEventType";
+    customBox.placeholder = "Enter Event Type";
+    customBox.style.display = "none";
+    customBox.style.marginTop = "8px";
+    customBox.autocomplete = "off";
+
+    const eventType = $("eventType");
+    if (eventType && eventType.parentNode) {
+      eventType.parentNode.insertBefore(customBox, eventType.nextSibling);
+    }
+  }
+
+  return customBox;
+}
+
+function setupOtherEventType() {
+  const eventType = $("eventType");
+  if (!eventType) return;
+
+  const customBox = ensureCustomEventInput();
+
+  function toggleCustomBox() {
+    if (eventType.value === "Other") {
+      customBox.style.display = "block";
+      customBox.required = true;
+      customBox.focus();
+    } else {
+      customBox.style.display = "none";
+      customBox.required = false;
+      customBox.value = "";
+    }
+  }
+
+  eventType.addEventListener("change", toggleCustomBox);
+  toggleCustomBox();
+}
 
 function applyRequestedUIChanges() {
   // Remove the display heading/description shown on the page.
@@ -15,19 +62,17 @@ function applyRequestedUIChanges() {
     if (headingText === "generate natural customer reviews") {
       const parent = h.closest(".hero, .header, .heading, section, div") || h.parentElement;
       const next = h.nextElementSibling;
-
       if (next && /creates natural, human-style google review drafts/i.test(next.textContent || "")) {
         next.remove();
       }
       h.remove();
-
       if (parent && parent.children.length === 0 && parent.parentElement) {
         parent.remove();
       }
     }
   });
 
-  // Remove Wedding, Festival and Other from Event Type, keep blank for customer entry/selection, and add Party.
+  // Event Type options. Includes Other option for custom text entry.
   const eventType = $("eventType");
   if (!eventType) return;
 
@@ -38,7 +83,8 @@ function applyRequestedUIChanges() {
       { value: "Birthday", label: "Birthday" },
       { value: "Corporate Event", label: "Corporate Event" },
       { value: "Housewarming", label: "Housewarming" },
-      { value: "Party", label: "Party" }
+      { value: "Party", label: "Party" },
+      { value: "Other", label: "Other (Enter Custom Text)" }
     ];
 
     eventType.innerHTML = "";
@@ -51,6 +97,8 @@ function applyRequestedUIChanges() {
   } else {
     eventType.placeholder = "Enter Event Type";
   }
+
+  setupOtherEventType();
 }
 
 if (document.readyState === "loading") {
@@ -62,6 +110,7 @@ if (document.readyState === "loading") {
 function buildStars(id, cb) {
   const c = $(id);
   if (!c) return;
+
   c.innerHTML = "";
   for (let i = 1; i <= 5; i++) {
     const s = document.createElement("span");
@@ -95,18 +144,19 @@ function updateAIStatus() {
   }
 }
 
-function clean(v) {
-  return (v || "").trim().replace(/\s+/g, " ");
-}
-
 function inputs() {
+  const eventTypeElement = $("eventType");
+  const selectedEventType = clean(eventTypeElement ? eventTypeElement.value : "");
+  const customEventType = clean($("customEventType")?.value);
+  const finalEventType = selectedEventType === "Other" ? customEventType : selectedEventType;
+
   return {
-    language: $("language").value,
-    eventType: clean($("eventType").value),
-    tone: $("tone").value,
-    length: $("length").value,
-    likedMost: clean($("likedMost").value),
-    specialMention: clean($("specialMention").value),
+    language: $("language")?.value || "",
+    eventType: finalEventType,
+    tone: $("tone")?.value || "",
+    length: $("length")?.value || "",
+    likedMost: clean($("likedMost")?.value),
+    specialMention: clean($("specialMention")?.value),
     foodRating,
     serviceRating
   };
@@ -163,15 +213,18 @@ function foodSentence(r) {
     "Food quality was excellent, and the menu was enjoyed by almost everyone.",
     "The taste, freshness, and presentation of the food were really good."
   ]);
+
   if (r === 4) return pick([
     "The food was good overall and most guests enjoyed it.",
     "Food taste was nice, with only small scope for improvement.",
     "Overall food quality was quite good and satisfying."
   ]);
+
   if (r === 3) return pick([
     "The food was decent overall, though a few items could have been better.",
     "Food quality was satisfactory, with some dishes better than others."
   ]);
+
   return pick([
     "The food was manageable, but there is definitely room for improvement.",
     "Some food items were okay, while a few things could be improved next time."
@@ -184,15 +237,18 @@ function serviceSentence(r) {
     "Service was well coordinated, and the team was helpful throughout the event.",
     "The team handled the setup and serving very professionally."
   ]);
+
   if (r === 4) return pick([
     "The service was good and the staff was cooperative.",
     "The team managed the arrangements well overall.",
     "Service was smooth, with only minor areas that can be improved."
   ]);
+
   if (r === 3) return pick([
     "Service was satisfactory, though coordination could be a little better.",
     "The staff was cooperative, but the overall service can be improved further."
   ]);
+
   return pick([
     "Service could have been better in a few areas, but the team did support the event.",
     "There is scope to improve service coordination for future events."
@@ -201,26 +257,31 @@ function serviceSentence(r) {
 
 function highlightSentence(d) {
   const parts = [];
+
   if (d.likedMost) parts.push(pick([
     `We especially liked ${d.likedMost}.`,
     `A good part of the experience was ${d.likedMost}.`,
     `What stood out for us was ${d.likedMost}.`
   ]));
+
   if (d.specialMention) parts.push(pick([
     `${d.specialMention} was also appreciated by guests.`,
     `The ${d.specialMention} was a nice highlight.`,
     `A special mention for ${d.specialMention}.`
   ]));
+
   return parts.join(" ");
 }
 
 function closingSentence(d) {
   const good = d.foodRating >= 4 && d.serviceRating >= 4;
+
   if (good) return pick([
     "Overall, it felt like a smooth and pleasant catering experience.",
     "Overall, we were happy with the arrangements and would recommend them for similar functions.",
     "Thank you to the team for making the function easier to manage and more memorable."
   ]);
+
   return pick([
     "Overall, the experience was decent, and with a few improvements it can become even better.",
     "We appreciate the effort from the team and hope the small improvement areas are taken positively.",
